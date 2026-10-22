@@ -3,32 +3,25 @@ using UnityEngine;
 public class MovimientoJugador : MonoBehaviour
 {
     public float velocidad = 5f;
-
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRenderer;
+    private Vector2 entradas;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
-        // Detecta si presionas A/D o Flechas Izquierda/Derecha
-        float movimientoX = Input.GetAxisRaw("Horizontal");
+        // Detecta flechas / WASD tanto en X (izquierda/derecha) como en Y (arriba/abajo)
+        float movX = Input.GetAxisRaw("Horizontal");
+        float movY = Input.GetAxisRaw("Vertical");
 
-        // Aplica velocidad horizontal
-        rb.linearVelocity = new Vector2(movimientoX * velocidad, rb.linearVelocity.y);
+        entradas = new Vector2(movX, movY).normalized;
+    }
 
-        // Giro del personaje según la dirección
-        if (movimientoX > 0)
-        {
-            spriteRenderer.flipX = false; // Mira hacia la derecha
-        }
-        else if (movimientoX < 0)
-        {
-            spriteRenderer.flipX = true;  // Mira hacia la izquierda
-        }
+    void FixedUpdate()
+    {
+        rb.linearVelocity = entradas * velocidad;
     }
 }
